@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connecting to WiFi...</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h1 { color: #1f2937; font-size: 1.5rem; margin-bottom: 10px; }
+    p { color: #6b7280; margin-bottom: 10px; }
+    .status { font-size: 0.875rem; color: #9ca3af; }
+    .error { color: #dc2626; }
+    .retry-btn {
+      display: none;
+      margin-top: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .retry-btn:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="spinner" id="spinner"></div>
+    <h1>Connecting to WiFi</h1>
+    <p id="message">Initializing secure connection...</p>
+    <p class="status" id="status"></p>
+    <button class="retry-btn" id="retry-btn" onclick="initConnection()">Try Again</button>
+  </div>
+
+  <script>
+    // ========================================================================
+    // CONFIGURATION
+    // Change PORTAL_URL to your captive portal server's URL
+    // ========================================================================
+    const PORTAL_URL = 'https://portal.example.com';
+
+    const statusEl = document.getElementById('status');
+    const messageEl = document.getElementById('message');
+    const spinnerEl = document.getElementById('spinner');
+    const retryBtn = document.getElementById('retry-btn');
+
+    function showError(msg) {
+      messageEl.textContent = msg;
+      messageEl.classList.add('error');
+      spinnerEl.style.display = 'none';
+      retryBtn.style.display = 'inline-block';
+    }
+
+    function updateStatus(msg) {
+      statusEl.textContent = msg;
+    }
+
+    async function initConnection() {
+      // Reset UI
+      messageEl.textContent = 'Initializing secure connection...';
+      messageEl.classList.remove('error');
+      spinnerEl.style.display = 'block';
+      retryBtn.style.display = 'none';
+
+      try {
+        updateStatus('Fetching device information...');
+
+        // Step 1: Get client info from OPNsense API
+        // OPNsense captive portal page runs on the same origin as the API
+        const formData = new FormData();
+        formData.append('user', '');
+        formData.append('password', '');
+
+        const response = await fetch('/api/captiveportal/access/status/', {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to get device info from OPNsense');
+        }
+
+        const data = await response.json();
+        console.log('OPNsense response:', data);
+
+        if (!data.macAddress || !data.ipAddress) {
+          throw new Error('Could not determine device information');
+        }
+
+        updateStatus('Creating secure session...');
+
+        // Step 2: Get a one-time handoff token from our portal server
+        const tokenResponse = await fetch(`${PORTAL_URL}/api/create-handoff-token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mac: data.macAddress,
+            ip: data.ipAddress
+          })
+        });
+
+        if (!tokenResponse.ok) {
+          throw new Error('Failed to create secure session');
+        }
+
+        const tokenData = await tokenResponse.json();
+
+        updateStatus('Redirecting to login...');
+
+        // Step 3: Redirect to our portal with the one-time token
+        window.location.href = `${PORTAL_URL}/handoff?token=${encodeURIComponent(tokenData.token)}`;
+
+      } catch (error) {
+        console.error('Connection error:', error);
+        showError('Connection failed. Please try again.');
+        updateStatus(error.message);
+      }
+    }
+
+    // Start automatically
+    initConnection();
+  </script>
+</body>
+</html>

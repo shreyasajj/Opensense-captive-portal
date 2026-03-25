@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WiFi Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+
+    <!-- Screen 1: Phone + Birthday -->
+    <div id="screen-1" class="screen active">
+      <div class="icon">&#128246;</div>
+      <h1>Welcome to WiFi</h1>
+      <p>Enter your phone number and birthday to connect.</p>
+      <form id="lookup-form" onsubmit="return false;">
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="e.g. 555-123-4567" required autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="birthday">Birthday</label>
+          <input type="date" id="birthday" required>
+        </div>
+        <button type="submit" id="lookup-btn" class="btn primary">Continue</button>
+      </form>
+      <p id="screen1-error" class="error-msg"></p>
+    </div>
+
+    <!-- Screen 2: Device Type -->
+    <div id="screen-2" class="screen">
+      <div class="icon">&#128241;</div>
+      <h1>Hi, <span id="person-name"></span>!</h1>
+      <p>What type of device is this?</p>
+      <div class="device-buttons">
+        <button class="btn device-btn" onclick="registerDevice('phone')">
+          <span class="device-icon">&#128241;</span>
+          <span>This is my Phone</span>
+        </button>
+        <button class="btn device-btn" onclick="registerDevice('other')">
+          <span class="device-icon">&#128187;</span>
+          <span>Other Device</span>
+        </button>
+      </div>
+      <p id="screen2-error" class="error-msg"></p>
+    </div>
+
+    <!-- Screen 3: Success -->
+    <div id="screen-3" class="screen">
+      <div class="icon success-icon">&#9989;</div>
+      <h1>You're Connected!</h1>
+      <p id="success-message">You now have WiFi access. This page will close shortly.</p>
+      <div class="countdown" id="countdown"></div>
+    </div>
+
+    <!-- Screen 4: Not Found / Retry -->
+    <div id="screen-4" class="screen">
+      <div class="icon warning-icon">&#9888;&#65039;</div>
+      <h1>Not Found</h1>
+      <p id="not-found-message">We couldn't verify your identity.</p>
+      <p id="remaining-attempts" class="attempts-msg"></p>
+      <button class="btn primary" onclick="goToScreen(1)">Try Again</button>
+    </div>
+
+    <!-- Screen 5: Error -->
+    <div id="screen-5" class="screen">
+      <div class="icon error-icon">&#10060;</div>
+      <h1>Something Went Wrong</h1>
+      <p id="error-message">An unexpected error occurred.</p>
+      <p class="redirect-msg">Returning to start in <span id="error-countdown">5</span> seconds...</p>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

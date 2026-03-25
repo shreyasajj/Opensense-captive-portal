@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar">
+      <h2>Portal Admin</h2>
+      <ul>
+        <li><a href="#" class="nav-link active" data-tab="people">People & Devices</a></li>
+        <li><a href="#" class="nav-link" data-tab="attempts">Login Attempts</a></li>
+        <li><a href="#" class="nav-link" data-tab="unknown">Unknown MACs</a></li>
+        <li><a href="#" class="nav-link" data-tab="errors">Error Log</a></li>
+        <li><a href="#" class="nav-link" data-tab="settings">Settings</a></li>
+      </ul>
+    </nav>
+
+    <main class="content">
+      <!-- People & Devices Tab -->
+      <div id="tab-people" class="tab active">
+        <div class="tab-header">
+          <h1>People & Devices</h1>
+          <button class="btn small" onclick="loadPersons()">Refresh</button>
+        </div>
+        <div id="persons-list" class="card-list"></div>
+      </div>
+
+      <!-- Login Attempts Tab -->
+      <div id="tab-attempts" class="tab">
+        <div class="tab-header">
+          <h1>Login Attempts</h1>
+          <button class="btn small" onclick="loadAttempts()">Refresh</button>
+        </div>
+        <table id="attempts-table">
+          <thead>
+            <tr><th>Phone</th><th>Attempts</th><th>Status</th><th>Last Attempt</th><th>Actions</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Unknown MACs Tab -->
+      <div id="tab-unknown" class="tab">
+        <div class="tab-header">
+          <h1>Unknown MAC Addresses</h1>
+          <button class="btn small" onclick="loadUnknownMacs()">Refresh</button>
+        </div>
+        <table id="unknown-table">
+          <thead>
+            <tr><th>MAC Address</th><th>First Seen</th><th>Last Seen</th><th>Tag</th><th>Actions</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Error Log Tab -->
+      <div id="tab-errors" class="tab">
+        <div class="tab-header">
+          <h1>Error Log</h1>
+          <div>
+            <button class="btn small" onclick="loadErrors()">Refresh</button>
+            <button class="btn small danger" onclick="clearErrors()">Clear All</button>
+          </div>
+        </div>
+        <table id="errors-table">
+          <thead>
+            <tr><th>Time</th><th>Type</th><th>Message</th><th>Details</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Settings Tab -->
+      <div id="tab-settings" class="tab">
+        <h1>Settings</h1>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div>
+              <strong>Default Allow</strong>
+              <p>When enabled, new contacts found in Nextcloud are automatically approved. When disabled, admin must approve each new person.</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="setting-default-allow" onchange="updateSetting('default_allow', this.checked)">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
