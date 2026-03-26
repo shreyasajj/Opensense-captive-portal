@@ -77,10 +77,6 @@ OPNSENSE_API_SECRET=your-api-secret
 OPNSENSE_ZONE_ID=0
 OPNSENSE_VERIFY_SSL=false
 
-# Admin panel credentials
-ADMIN_USER=admin
-ADMIN_PASSWORD=change-me
-
 # Optional
 ARP_POLL_INTERVAL_MS=60000
 MAX_LOGIN_ATTEMPTS=3
@@ -150,7 +146,7 @@ docker compose build && docker compose up -d
 
 ## Admin Dashboard
 
-Access at `/admin/` with Basic auth (credentials from your `.env`).
+Access at `/admin/`. The admin panel has **no built-in authentication** — it's designed to be protected by an external auth proxy like [Authelia](https://www.authelia.com/), [Authentik](https://goauthentik.io/), or similar. Make sure to secure the `/admin` path in your reverse proxy before exposing it.
 
 | Feature | Description |
 |---------|-------------|
@@ -172,7 +168,7 @@ Access at `/admin/` with Basic auth (credentials from your `.env`).
 | POST | `/api/lookup` | Search contacts by phone + birthday |
 | POST | `/api/register-device` | Register the current device for a verified person |
 
-### Admin (Basic auth required)
+### Admin (protect with external auth proxy)
 
 | Method | Route | Description |
 |--------|-------|-------------|
@@ -208,7 +204,7 @@ npm run test:ci
 ```
 
 The test suite includes 80 tests across 7 suites:
-- **Unit tests** — CardDAV parsing, phone normalization, MAC validation, rate limiting, admin auth
+- **Unit tests** — CardDAV parsing, phone normalization, MAC validation, rate limiting
 - **Integration tests** — Full API endpoint testing for portal flow, admin endpoints, and handoff tokens
 
 ## CI/CD
@@ -231,8 +227,7 @@ GitHub Actions runs automatically on push and PRs:
 ├── db/
 │   └── init.js            # SQLite schema and initialization
 │
-├── middleware/
-│   └── adminAuth.js       # Basic auth middleware for admin routes
+├── middleware/             # Reserved for future middleware
 │
 ├── routes/
 │   ├── portal.js          # Public portal routes (lookup, register, handoff)

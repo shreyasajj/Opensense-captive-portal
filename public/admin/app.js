@@ -2,35 +2,17 @@
  * Admin Panel - Dashboard Logic
  */
 
-let authHeader = '';
-
 // ============================================================================
-// AUTH
+// API
 // ============================================================================
-
-function initAuth() {
-  const user = prompt('Admin username:');
-  const pass = prompt('Admin password:');
-  if (!user || !pass) {
-    document.body.innerHTML = '<div style="text-align:center;padding:80px;color:#6b7280;">Authentication required. Reload to try again.</div>';
-    return false;
-  }
-  authHeader = 'Basic ' + btoa(user + ':' + pass);
-  return true;
-}
 
 async function api(method, path, body) {
   const opts = {
     method,
-    headers: { Authorization: authHeader, 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },
   };
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch('/admin' + path, opts);
-  if (res.status === 401) {
-    alert('Authentication failed. Reloading...');
-    location.reload();
-    return null;
-  }
   return res.json();
 }
 
@@ -263,7 +245,6 @@ function formatDate(dateStr) {
 // INIT
 // ============================================================================
 
-if (initAuth()) {
-  loadPersons();
-  loadSettings();
-}
+// Load initial data
+loadPersons();
+loadSettings();

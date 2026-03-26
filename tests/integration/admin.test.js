@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { createApp, db, cleanDb, closeDb, adminHeaders } = require('./testApp');
+const { createApp, db, cleanDb, closeDb } = require('./testApp');
 
 let app;
 
@@ -15,24 +15,10 @@ afterAll(() => {
   closeDb();
 });
 
-describe('Admin authentication', () => {
-  test('rejects unauthenticated requests', async () => {
-    await request(app).get('/admin/api/persons').expect(401);
-  });
-
-  test('rejects wrong credentials', async () => {
-    await request(app)
-      .get('/admin/api/persons')
-      .set('Authorization', 'Basic ' + Buffer.from('wrong:wrong').toString('base64'))
-      .expect(401);
-  });
-});
-
 describe('GET /admin/api/persons', () => {
   test('returns empty list initially', async () => {
     const res = await request(app)
       .get('/admin/api/persons')
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body).toEqual([]);
@@ -51,7 +37,6 @@ describe('GET /admin/api/persons', () => {
 
     const res = await request(app)
       .get('/admin/api/persons')
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body).toHaveLength(1);
@@ -74,7 +59,6 @@ describe('DELETE /admin/api/persons/:id', () => {
 
     const res = await request(app)
       .delete(`/admin/api/persons/${person.id}`)
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body.success).toBe(true);
@@ -87,7 +71,6 @@ describe('DELETE /admin/api/persons/:id', () => {
   test('returns 404 for non-existent person', async () => {
     await request(app)
       .delete('/admin/api/persons/99999')
-      .set(adminHeaders())
       .expect(404);
   });
 });
@@ -105,7 +88,6 @@ describe('GET /admin/api/devices', () => {
 
     const res = await request(app)
       .get('/admin/api/devices')
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body).toHaveLength(1);
@@ -127,7 +109,6 @@ describe('POST /admin/api/devices/:id/approve', () => {
 
     const res = await request(app)
       .post(`/admin/api/devices/${device.id}/approve`)
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body.success).toBe(true);
@@ -151,7 +132,6 @@ describe('POST /admin/api/devices/:id/set-phone', () => {
 
     await request(app)
       .post(`/admin/api/devices/${device.id}/set-phone`)
-      .set(adminHeaders())
       .expect(200);
 
     const updated = db.prepare('SELECT * FROM devices WHERE id = ?').get(device.id);
@@ -168,7 +148,6 @@ describe('Login attempts admin API', () => {
 
     const res = await request(app)
       .get('/admin/api/attempts')
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body).toHaveLength(1);
@@ -182,7 +161,6 @@ describe('Login attempts admin API', () => {
 
     await request(app)
       .post(`/admin/api/attempts/${encodeURIComponent('555-0007')}/grant`)
-      .set(adminHeaders())
       .send({ extra: 3 })
       .expect(200);
 
@@ -196,7 +174,6 @@ describe('Settings API', () => {
   test('GET /admin/api/settings returns current settings', async () => {
     const res = await request(app)
       .get('/admin/api/settings')
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body.default_allow).toBe('true');
@@ -205,7 +182,6 @@ describe('Settings API', () => {
   test('PUT /admin/api/settings updates settings', async () => {
     await request(app)
       .put('/admin/api/settings')
-      .set(adminHeaders())
       .send({ default_allow: 'false' })
       .expect(200);
 
@@ -220,7 +196,6 @@ describe('Error log API', () => {
 
     const res = await request(app)
       .get('/admin/api/errors')
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body.rows).toHaveLength(1);
@@ -233,7 +208,6 @@ describe('Error log API', () => {
 
     await request(app)
       .delete('/admin/api/errors')
-      .set(adminHeaders())
       .expect(200);
 
     const count = db.prepare('SELECT COUNT(*) as c FROM errors').get().c;
@@ -247,7 +221,6 @@ describe('Unknown MACs API', () => {
 
     const res = await request(app)
       .get('/admin/api/unknown-macs')
-      .set(adminHeaders())
       .expect(200);
 
     expect(res.body).toHaveLength(1);
@@ -259,7 +232,6 @@ describe('Unknown MACs API', () => {
 
     await request(app)
       .post(`/admin/api/unknown-macs/${mac.id}/tag`)
-      .set(adminHeaders())
       .send({ tag: 'printer' })
       .expect(200);
 
@@ -273,7 +245,6 @@ describe('Unknown MACs API', () => {
 
     await request(app)
       .delete(`/admin/api/unknown-macs/${mac.id}`)
-      .set(adminHeaders())
       .expect(200);
 
     const deleted = db.prepare('SELECT * FROM unknown_macs WHERE id = ?').get(mac.id);
