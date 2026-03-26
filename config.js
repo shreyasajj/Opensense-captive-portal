@@ -19,11 +19,6 @@ module.exports = {
     verifySsl: process.env.OPNSENSE_VERIFY_SSL === 'true',
   },
 
-  admin: {
-    user: process.env.ADMIN_USER || 'admin',
-    password: process.env.ADMIN_PASSWORD || 'admin',
-  },
-
   arpPollInterval: parseInt(process.env.ARP_POLL_INTERVAL_MS || '60000', 10),
   maxLoginAttempts: parseInt(process.env.MAX_LOGIN_ATTEMPTS || '3', 10),
 };

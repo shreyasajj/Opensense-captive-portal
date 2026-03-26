@@ -15,8 +15,6 @@ process.env.SESSION_SECRET = 'test-secret';
 process.env.NEXTCLOUD_URL = 'https://nextcloud.test.local';
 process.env.NEXTCLOUD_USER = 'testuser';
 process.env.NEXTCLOUD_PASSWORD = 'testpass';
-process.env.ADMIN_USER = 'admin';
-process.env.ADMIN_PASSWORD = 'admin';
 process.env.MAX_LOGIN_ATTEMPTS = '3';
 // Disable OPNsense so no real connections are made
 delete process.env.OPNSENSE_URL;
@@ -71,10 +69,4 @@ function closeDb() {
   }
 }
 
-function adminHeaders() {
-  return {
-    Authorization: 'Basic ' + Buffer.from('admin:admin').toString('base64'),
-  };
-}
-
-module.exports = { createApp, db, cleanDb, closeDb, adminHeaders };
+module.exports = { createApp, db, cleanDb, closeDb };

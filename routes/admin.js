@@ -1,14 +1,10 @@
 const express = require('express');
 const db = require('../db/init');
-const adminAuth = require('../middleware/adminAuth');
 const opnsense = require('../services/opnsense');
 const attemptsService = require('../services/attempts');
 const logger = require('../services/logger');
 
 const router = express.Router();
-
-// All admin API routes require authentication
-router.use(adminAuth);
 
 // ============================================================================
 // PERSONS
