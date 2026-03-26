@@ -1,9 +1,8 @@
+## Pull-only compose file — no local build needed
+## Usage: docker compose -f docker-compose.ghcr.yml up -d
 services:
   frontend:
     image: ghcr.io/shreyasajj/opensense-captive-portal/frontend:latest
-    build:
-      context: .
-      dockerfile: docker/frontend/Dockerfile
     ports:
       - "${PORTAL_PORT:-8080}:80"
     depends_on:
@@ -12,9 +11,6 @@ services:
 
   backend:
     image: ghcr.io/shreyasajj/opensense-captive-portal/backend:latest
-    build:
-      context: .
-      dockerfile: docker/backend/Dockerfile
     env_file:
       - .env
     volumes:
