@@ -8,8 +8,9 @@
  * Screen 5: Error - auto-redirect to start
  */
 
-let currentScreen = 1;
+let currentScreen = 0;
 let personData = null;
+let termsAccepted = false;
 
 // ============================================================================
 // SCREEN MANAGEMENT
@@ -17,6 +18,7 @@ let personData = null;
 
 function goToScreen(num) {
   document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
+  // Support named screens like "declined"
   const screen = document.getElementById(`screen-${num}`);
   if (screen) {
     screen.classList.add('active');
@@ -26,6 +28,45 @@ function goToScreen(num) {
     screen.style.animation = '';
   }
   currentScreen = num;
+}
+
+// ============================================================================
+// SCREEN 0: TERMS & CONDITIONS
+// ============================================================================
+
+function acceptTerms(type) {
+  termsAccepted = true;
+  goToScreen(1);
+}
+
+function declineTerms() {
+  goToScreen('declined');
+}
+
+// ============================================================================
+// MODALS
+// ============================================================================
+
+function openModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function closeModalOutside(event, id) {
+  if (event.target === event.currentTarget) {
+    closeModal(id);
+  }
 }
 
 function showError(screenNum, elementId, message) {
