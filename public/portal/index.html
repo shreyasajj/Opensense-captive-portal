@@ -9,8 +9,41 @@
 <body>
   <div class="container">
 
+    <!-- Screen 0: Terms & Conditions Agreement -->
+    <div id="screen-0" class="screen active">
+      <div class="icon">&#128225;</div>
+      <h1>Network Access Agreement</h1>
+      <p>Before connecting, you must accept our totally reasonable and not-at-all-suspicious terms.</p>
+      <div class="terms-links">
+        <a href="#" onclick="openModal('terms-modal'); return false;">&#128220; Terms &amp; Conditions</a>
+        <a href="#" onclick="openModal('privacy-modal'); return false;">&#128373;&#65039; Privacy Policy</a>
+      </div>
+      <div class="terms-buttons">
+        <button class="btn terms-btn agree-curious" onclick="acceptTerms('curious')">
+          &#9745; I Agree <span class="btn-sub">(And I'm Curious)</span>
+        </button>
+        <button class="btn terms-btn agree-pretend" onclick="acceptTerms('pretending')">
+          &#9745; I Agree <span class="btn-sub">(And I'm Pretending I'm Not)</span>
+        </button>
+        <button class="btn terms-btn decline-btn" onclick="declineTerms()">
+          &#9746; Disconnect <span class="btn-sub">(Coward)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen 0.5: Declined - shame screen -->
+    <div id="screen-declined" class="screen">
+      <div class="icon">&#128584;</div>
+      <h1>Disconnected.</h1>
+      <p class="shame-text">Wow. Okay. That's fine. Totally fine.<br><br>
+        We weren't even that good of a Wi-Fi network anyway.<br><br>
+        <em>*stares out window dramatically*</em></p>
+      <p class="shame-sub">You have been disconnected from vibes.</p>
+      <button class="btn primary" onclick="goToScreen(0)" style="margin-top: 8px;">Fine, I'll Come Back</button>
+    </div>
+
     <!-- Screen 1: Phone + Birthday -->
-    <div id="screen-1" class="screen active">
+    <div id="screen-1" class="screen">
       <div class="icon">&#128246;</div>
       <h1>Welcome to WiFi</h1>
       <p>Enter your phone number and birthday to connect.</p>
@@ -71,6 +104,204 @@
       <p class="redirect-msg">Returning to start in <span id="error-countdown">5</span> seconds...</p>
     </div>
 
+  </div>
+
+  <!-- Terms & Conditions Modal -->
+  <div id="terms-modal" class="modal-overlay" onclick="closeModalOutside(event, 'terms-modal')">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('terms-modal')">&times;</button>
+      <div class="modal-body">
+        <h2>NETWORK ACCESS AGREEMENT</h2>
+        <p class="version">Version 6.66.1 (Effective Immediately)</p>
+
+        <p>Welcome to this Wi-Fi Network ("The Network").<br>
+        By selecting "I Agree", you ("The User," "You," or "Future Problem") consent to the following Terms &amp; Conditions.</p>
+
+        <p><em>Please review carefully. Or pretend to. We both know what you're doing.</em></p>
+
+        <h3>1. Purpose of Access</h3>
+        <p>The Network is provided for lawful internet activity, light productivity, and the controlled escalation of mutual tension.</p>
+        <p>Unauthorized activities include but are not limited to:</p>
+        <ul>
+          <li>Hacking governments</li>
+          <li>Downloading cursed files</li>
+          <li>Pretending you didn't just look over here twice</li>
+        </ul>
+
+        <h3>2. Performance Disclaimer</h3>
+        <p>Connection speeds may vary depending on:</p>
+        <ul>
+          <li>Signal interference</li>
+          <li>Atmospheric conditions</li>
+          <li>Whether you're being cute about it</li>
+        </ul>
+        <p>The Network reserves the right to throttle bandwidth if you:</p>
+        <ul>
+          <li>Lie about "just checking one thing"</li>
+          <li>Use this Wi-Fi to flirt with someone else</li>
+          <li>Act like you're not enjoying this</li>
+        </ul>
+
+        <h3>3. Eye Contact Compliance Policy</h3>
+        <ul>
+          <li>Sustained eye contact (&ge; 4 seconds) constitutes implied consent to light flirting.</li>
+          <li>Sustained eye contact (&ge; 6 seconds) constitutes escalation.</li>
+          <li>Sustained eye contact (&ge; 8 seconds) activates the "We Need To Talk About This" protocol.</li>
+        </ul>
+        <p><strong>You have been warned.</strong></p>
+
+        <h3>4. Emotional Risk Disclosure</h3>
+        <p>By accessing The Network, you acknowledge potential side effects, including:</p>
+        <ul>
+          <li>Elevated heart rate</li>
+          <li>Unnecessary smirking</li>
+          <li>Confusing "this is a bad idea" with "this is exciting"</li>
+          <li>Thinking about this interaction later for no professional reason</li>
+        </ul>
+        <p>The Provider accepts no liability for butterflies, tension, or reckless confidence.</p>
+
+        <h3>5. Data &amp; Privacy Statement</h3>
+        <p>We do not monitor your browsing activity.</p>
+        <p>However, if you search:</p>
+        <ul>
+          <li>"How to stop thinking about someone"</li>
+          <li>"Am I catching feelings?"</li>
+          <li>"Signs someone is flirting but pretending not to"</li>
+        </ul>
+        <p>The Network may experience mysterious slowdowns.</p>
+        <p><em>Purely coincidental.</em></p>
+
+        <h3>6. Snack &amp; Hospitality Addendum</h3>
+        <p>If you are consuming premium-tier snacks while connected to The Network, you agree to disclose said snacks to The Provider.</p>
+        <p>Failure to comply may result in:</p>
+        <ul>
+          <li>Temporary signal instability</li>
+          <li>Suspicious buffering</li>
+          <li>Heightened eye contact enforcement</li>
+        </ul>
+
+        <h3>7. Vibe Integrity Standards</h3>
+        <p>Users must maintain acceptable vibe levels. The Network may suspend access for:</p>
+        <ul>
+          <li>Chronic negativity</li>
+          <li>Boring energy</li>
+          <li>Emotional cowardice</li>
+        </ul>
+        <p><strong>We run a tight operation.</strong></p>
+
+        <h3>8. Binding Agreement</h3>
+        <p>By clicking "I Agree", you certify that:</p>
+        <ul>
+          <li>You are at least 18 years old (emotionally questionable is acceptable).</li>
+          <li>You understand this document is satire.</li>
+          <li>You acknowledge the possibility that this connection may not be the only thing strengthening.</li>
+          <li>You accept full responsibility for whatever this becomes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div id="privacy-modal" class="modal-overlay" onclick="closeModalOutside(event, 'privacy-modal')">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('privacy-modal')">&times;</button>
+      <div class="modal-body">
+        <h2>PRIVACY POLICY</h2>
+        <p class="version">Version 4.20 &mdash; "Nothing To See Here" Edition</p>
+
+        <p>This Privacy Policy ("The Policy," "This Thing You Won't Read," "Legal Vibes") governs the collection, use, and emotional weaponization of your data while connected to The Network.</p>
+
+        <h3>1. What We Collect</h3>
+        <p>We collect the following information:</p>
+        <ul>
+          <li>Your phone number (for verification, not for 2 AM texts... probably)</li>
+          <li>Your birthday (so we know your zodiac sign &mdash; this is critical infrastructure)</li>
+          <li>Your device's MAC address (the networking kind, not the laptop)</li>
+          <li>Your vibe frequency (measured in units of "are they into this?")</li>
+        </ul>
+
+        <h3>2. What We Don't Collect</h3>
+        <ul>
+          <li>Your browsing history (we have boundaries)</li>
+          <li>Your passwords (we're not monsters)</li>
+          <li>Your Spotify Wrapped (but we're judging you)</li>
+          <li>Your Notes app (that's between you and your therapist)</li>
+        </ul>
+
+        <h3>3. How We Use Your Data</h3>
+        <p>Your information may be used for:</p>
+        <ul>
+          <li>Letting you onto the Wi-Fi (the boring reason)</li>
+          <li>Confirming you are who you say you are (trust issues, sorry)</li>
+          <li>Internal metrics such as "how many people actually read this"</li>
+          <li>Determining if you're a morning person (affects network priority)</li>
+        </ul>
+
+        <h3>4. Data Retention</h3>
+        <p>Your data is stored for as long as necessary to provide The Network services, or until one of us gets bored. Whichever comes first.</p>
+        <p>Upon disconnection, your data enters a "situationship" with our database &mdash; technically still there, but no one's really committing to it.</p>
+
+        <h3>5. Third-Party Sharing</h3>
+        <p>We do not sell your data to third parties.</p>
+        <p>We may, however, share anonymized data with:</p>
+        <ul>
+          <li>Our Nextcloud server (it's like the cloud but with trust issues)</li>
+          <li>The OPNsense firewall (the bouncer of this operation)</li>
+          <li>The router (who honestly knows too much already)</li>
+        </ul>
+
+        <h3>6. Cookies</h3>
+        <p>This portal uses session cookies. Not the good kind with chocolate chips.</p>
+        <p>These cookies:</p>
+        <ul>
+          <li>Remember your session (so you don't have to re-verify)</li>
+          <li>Do not track you across the internet</li>
+          <li>Cannot be dunked in milk</li>
+          <li>Expire when you close your browser, much like your motivation on Mondays</li>
+        </ul>
+
+        <h3>7. Your Rights</h3>
+        <p>You have the right to:</p>
+        <ul>
+          <li><strong>Access</strong> &mdash; Request a copy of your data (we'll print it on a napkin)</li>
+          <li><strong>Rectification</strong> &mdash; Correct inaccurate data (except your vibe score, that's final)</li>
+          <li><strong>Erasure</strong> &mdash; Request deletion of your data (the "let's pretend this never happened" clause)</li>
+          <li><strong>Portability</strong> &mdash; Take your data elsewhere (but can another Wi-Fi really give you what we have?)</li>
+          <li><strong>Object</strong> &mdash; Object to processing (noted, ignored, archived)</li>
+        </ul>
+
+        <h3>8. Security</h3>
+        <p>We take reasonable steps to protect your data, including:</p>
+        <ul>
+          <li>Encryption (the math kind, not the dating kind)</li>
+          <li>Firewalls (aggressive ones)</li>
+          <li>A very stern look at anyone who tries anything suspicious</li>
+          <li>Hoping for the best</li>
+        </ul>
+
+        <h3>9. Children's Privacy</h3>
+        <p>This Network is not intended for users under 13. If you are under 13, please go outside. Seriously. It's nice out there. Touch grass.</p>
+
+        <h3>10. Changes to This Policy</h3>
+        <p>We reserve the right to update this policy at any time, for any reason, including but not limited to:</p>
+        <ul>
+          <li>Legal requirements</li>
+          <li>Boredom</li>
+          <li>A particularly inspiring shower thought</li>
+          <li>Mercury being in retrograde</li>
+        </ul>
+
+        <h3>11. Contact</h3>
+        <p>For privacy concerns, data requests, or emotional support, please contact The Network Administrator by:</p>
+        <ul>
+          <li>Making sustained eye contact (see Terms &amp; Conditions, Section 3)</li>
+          <li>Sending a carrier pigeon (encrypted, obviously)</li>
+          <li>Thinking really hard about it and hoping we notice</li>
+        </ul>
+
+        <p class="policy-footer"><em>By continuing to use The Network, you acknowledge that you scrolled to the bottom of this policy, which is more effort than most people put into anything. We respect that.</em></p>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
