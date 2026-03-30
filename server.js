@@ -32,6 +32,7 @@ app.use('/admin/api', express.json());
 app.use('/', require('./routes/handoff'));
 app.use('/', require('./routes/portal'));
 app.use('/admin', require('./routes/admin'));
+app.use('/api/ha', require('./routes/ha'));
 
 // Serve static files
 app.use('/portal', express.static(path.join(__dirname, 'public', 'portal')));

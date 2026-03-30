@@ -43,6 +43,7 @@ function createApp() {
   app.use('/', require('../../routes/handoff'));
   app.use('/', require('../../routes/portal'));
   app.use('/admin', require('../../routes/admin'));
+  app.use('/api/ha', require('../../routes/ha'));
 
   app.use((err, req, res, _next) => {
     res.status(500).json({ error: 'Internal server error' });
