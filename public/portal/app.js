@@ -1,16 +1,13 @@
 /**
- * Captive Portal - 5-Screen Flow
+ * Captive Portal - 3-Screen Flow
  *
- * Screen 1: Phone + Birthday input
+ * Screen 1: Login (phone + birthday + terms checkbox)
  * Screen 2: Device type selection (phone / other)
  * Screen 3: Success - connected
- * Screen 4: Not found - retry
- * Screen 5: Error - auto-redirect to start
  */
 
-let currentScreen = 0;
+let currentScreen = 1;
 let personData = null;
-let termsAccepted = false;
 
 // ============================================================================
 // SCREEN MANAGEMENT
@@ -18,11 +15,9 @@ let termsAccepted = false;
 
 function goToScreen(num) {
   document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
-  // Support named screens like "declined"
   const screen = document.getElementById(`screen-${num}`);
   if (screen) {
     screen.classList.add('active');
-    // Re-trigger animation
     screen.style.animation = 'none';
     screen.offsetHeight; // force reflow
     screen.style.animation = '';
@@ -30,17 +25,13 @@ function goToScreen(num) {
   currentScreen = num;
 }
 
-// ============================================================================
-// SCREEN 0: TERMS & CONDITIONS
-// ============================================================================
-
-function acceptTerms(type) {
-  termsAccepted = true;
-  goToScreen(1);
+function showError(msg) {
+  const el = document.getElementById('screen1-error');
+  if (el) el.textContent = msg;
 }
 
-function declineTerms() {
-  goToScreen('declined');
+function clearErrors() {
+  document.querySelectorAll('.error-msg').forEach((el) => (el.textContent = ''));
 }
 
 // ============================================================================
@@ -69,15 +60,6 @@ function closeModalOutside(event, id) {
   }
 }
 
-function showError(screenNum, elementId, message) {
-  const el = document.getElementById(elementId);
-  if (el) el.textContent = message;
-}
-
-function clearErrors() {
-  document.querySelectorAll('.error-msg').forEach((el) => (el.textContent = ''));
-}
-
 // ============================================================================
 // SCREEN 1: LOOKUP
 // ============================================================================
@@ -88,9 +70,15 @@ document.getElementById('lookup-form').addEventListener('submit', async (e) => {
 
   const phone = document.getElementById('phone').value.trim();
   const birthday = document.getElementById('birthday').value;
+  const termsChecked = document.getElementById('terms-check').checked;
 
   if (!phone || !birthday) {
-    showError(1, 'screen1-error', 'Please fill in both fields.');
+    showError('Please fill in both fields.');
+    return;
+  }
+
+  if (!termsChecked) {
+    showError('You must agree to the Terms & Conditions to continue.');
     return;
   }
 
@@ -108,16 +96,12 @@ document.getElementById('lookup-form').addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok) {
-      showError(1, 'screen1-error', data.error || 'Something went wrong.');
-      btn.disabled = false;
-      btn.classList.remove('loading');
+      showError(data.error || 'Something went wrong.');
       return;
     }
 
     if (data.locked) {
-      document.getElementById('error-message').textContent = data.message;
-      goToScreen(5);
-      startErrorCountdown();
+      showError(data.message || 'Too many attempts. Contact an administrator.');
       return;
     }
 
@@ -126,23 +110,17 @@ document.getElementById('lookup-form').addEventListener('submit', async (e) => {
       document.getElementById('person-name').textContent = data.person.name;
       goToScreen(2);
     } else {
-      document.getElementById('not-found-message').textContent =
-        data.message || "We couldn't verify your identity.";
+      let msg = data.message || "We couldn't verify your identity.";
       if (data.remaining !== undefined) {
-        const el = document.getElementById('remaining-attempts');
-        el.textContent =
-          data.remaining > 0
-            ? `You have ${data.remaining} attempt${data.remaining !== 1 ? 's' : ''} remaining.`
-            : 'No attempts remaining. Contact an administrator.';
+        msg += data.remaining > 0
+          ? ` ${data.remaining} attempt${data.remaining !== 1 ? 's' : ''} remaining.`
+          : ' No attempts remaining. Contact an administrator.';
       }
-      goToScreen(4);
+      showError(msg);
     }
   } catch (err) {
     console.error('Lookup error:', err);
-    document.getElementById('error-message').textContent =
-      'Connection error. Please try again.';
-    goToScreen(5);
-    startErrorCountdown();
+    showError('Connection error. Please try again.');
   } finally {
     btn.disabled = false;
     btn.classList.remove('loading');
@@ -156,7 +134,6 @@ document.getElementById('lookup-form').addEventListener('submit', async (e) => {
 async function registerDevice(deviceType) {
   clearErrors();
 
-  // Disable buttons during request
   const buttons = document.querySelectorAll('.device-btn');
   buttons.forEach((b) => (b.disabled = true));
 
@@ -170,8 +147,8 @@ async function registerDevice(deviceType) {
     const data = await res.json();
 
     if (!res.ok) {
-      showError(2, 'screen2-error', data.error || 'Registration failed.');
-      buttons.forEach((b) => (b.disabled = false));
+      const el = document.getElementById('screen2-error');
+      if (el) el.textContent = data.error || 'Registration failed.';
       return;
     }
 
@@ -180,17 +157,13 @@ async function registerDevice(deviceType) {
       goToScreen(3);
       startSuccessCountdown();
     } else {
-      document.getElementById('error-message').textContent =
-        data.error || 'Registration failed.';
-      goToScreen(5);
-      startErrorCountdown();
+      const el = document.getElementById('screen2-error');
+      if (el) el.textContent = data.error || 'Registration failed.';
     }
   } catch (err) {
     console.error('Register error:', err);
-    document.getElementById('error-message').textContent =
-      'Connection error. Please try again.';
-    goToScreen(5);
-    startErrorCountdown();
+    const el = document.getElementById('screen2-error');
+    if (el) el.textContent = 'Connection error. Please try again.';
   } finally {
     buttons.forEach((b) => (b.disabled = false));
   }
@@ -210,34 +183,9 @@ function startSuccessCountdown() {
     if (seconds <= 0) {
       clearInterval(timer);
       el.textContent = 'You can close this page now.';
-      // Try to close the window (works if opened by captive portal)
       try { window.close(); } catch (e) { /* ignore */ }
     } else {
       el.textContent = `This page will close in ${seconds} second${seconds !== 1 ? 's' : ''}...`;
-    }
-  }, 1000);
-}
-
-// ============================================================================
-// SCREEN 5: ERROR COUNTDOWN
-// ============================================================================
-
-function startErrorCountdown() {
-  let seconds = 5;
-  const el = document.getElementById('error-countdown');
-  el.textContent = seconds;
-
-  const timer = setInterval(() => {
-    seconds--;
-    el.textContent = seconds;
-    if (seconds <= 0) {
-      clearInterval(timer);
-      // Reset form and go back to screen 1
-      document.getElementById('phone').value = '';
-      document.getElementById('birthday').value = '';
-      clearErrors();
-      personData = null;
-      goToScreen(1);
     }
   }, 1000);
 }

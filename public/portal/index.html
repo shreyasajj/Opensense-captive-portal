@@ -9,41 +9,8 @@
 <body>
   <div class="container">
 
-    <!-- Screen 0: Terms & Conditions Agreement -->
-    <div id="screen-0" class="screen active">
-      <div class="icon">&#128225;</div>
-      <h1>Network Access Agreement</h1>
-      <p>Before connecting, you must accept our totally reasonable and not-at-all-suspicious terms.</p>
-      <div class="terms-links">
-        <a href="#" onclick="openModal('terms-modal'); return false;">&#128220; Terms &amp; Conditions</a>
-        <a href="#" onclick="openModal('privacy-modal'); return false;">&#128373;&#65039; Privacy Policy</a>
-      </div>
-      <div class="terms-buttons">
-        <button class="btn terms-btn agree-curious" onclick="acceptTerms('curious')">
-          &#9745; I Agree <span class="btn-sub">(And I'm Curious)</span>
-        </button>
-        <button class="btn terms-btn agree-pretend" onclick="acceptTerms('pretending')">
-          &#9745; I Agree <span class="btn-sub">(And I'm Pretending I'm Not)</span>
-        </button>
-        <button class="btn terms-btn decline-btn" onclick="declineTerms()">
-          &#9746; Disconnect <span class="btn-sub">(Coward)</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Screen 0.5: Declined - shame screen -->
-    <div id="screen-declined" class="screen">
-      <div class="icon">&#128584;</div>
-      <h1>Disconnected.</h1>
-      <p class="shame-text">Wow. Okay. That's fine. Totally fine.<br><br>
-        We weren't even that good of a Wi-Fi network anyway.<br><br>
-        <em>*stares out window dramatically*</em></p>
-      <p class="shame-sub">You have been disconnected from vibes.</p>
-      <button class="btn primary" onclick="goToScreen(0)" style="margin-top: 8px;">Fine, I'll Come Back</button>
-    </div>
-
-    <!-- Screen 1: Phone + Birthday -->
-    <div id="screen-1" class="screen">
+    <!-- Screen 1: Login + Terms -->
+    <div id="screen-1" class="screen active">
       <div class="icon">&#128246;</div>
       <h1>Welcome to WiFi</h1>
       <p>Enter your phone number and birthday to connect.</p>
@@ -56,7 +23,17 @@
           <label for="birthday">Birthday</label>
           <input type="date" id="birthday" required>
         </div>
-        <button type="submit" id="lookup-btn" class="btn primary">Continue</button>
+        <div class="terms-agree">
+          <label class="checkbox-label">
+            <input type="checkbox" id="terms-check">
+            <span>I agree to the
+              <a href="#" onclick="openModal('terms-modal'); return false;">Terms &amp; Conditions</a>
+              and
+              <a href="#" onclick="openModal('privacy-modal'); return false;">Privacy Policy</a>
+            </span>
+          </label>
+        </div>
+        <button type="submit" id="lookup-btn" class="btn primary">Connect</button>
       </form>
       <p id="screen1-error" class="error-msg"></p>
     </div>
@@ -85,23 +62,6 @@
       <h1>You're Connected!</h1>
       <p id="success-message">You now have WiFi access. This page will close shortly.</p>
       <div class="countdown" id="countdown"></div>
-    </div>
-
-    <!-- Screen 4: Not Found / Retry -->
-    <div id="screen-4" class="screen">
-      <div class="icon warning-icon">&#9888;&#65039;</div>
-      <h1>Not Found</h1>
-      <p id="not-found-message">We couldn't verify your identity.</p>
-      <p id="remaining-attempts" class="attempts-msg"></p>
-      <button class="btn primary" onclick="goToScreen(1)">Try Again</button>
-    </div>
-
-    <!-- Screen 5: Error -->
-    <div id="screen-5" class="screen">
-      <div class="icon error-icon">&#10060;</div>
-      <h1>Something Went Wrong</h1>
-      <p id="error-message">An unexpected error occurred.</p>
-      <p class="redirect-msg">Returning to start in <span id="error-countdown">5</span> seconds...</p>
     </div>
 
   </div>
