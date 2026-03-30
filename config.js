@@ -21,4 +21,5 @@ module.exports = {
 
   arpPollInterval: parseInt(process.env.ARP_POLL_INTERVAL_MS || '60000', 10),
   maxLoginAttempts: parseInt(process.env.MAX_LOGIN_ATTEMPTS || '3', 10),
+  haApiToken: process.env.HA_API_TOKEN || '',
 };

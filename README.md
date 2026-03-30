@@ -187,6 +187,17 @@ Access at `/admin/`. The admin panel has **no built-in authentication** — it's
 | POST | `/admin/api/unknown-macs/:id/tag` | Tag an unknown MAC |
 | DELETE | `/admin/api/unknown-macs/:id` | Remove unknown MAC entry |
 
+### Home Assistant API (Bearer token auth)
+
+Set `HA_API_TOKEN` in your `.env` to enable. Authenticate with `Authorization: Bearer <token>` header or `?token=<token>` query param.
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/api/ha/status` | Overview: person/device counts, online/offline, locked accounts, errors |
+| GET | `/api/ha/persons` | All persons with home/away status and per-device online state |
+| GET | `/api/ha/persons/:id` | Single person detail with devices and presence |
+| GET | `/api/ha/attempts` | Login attempts with `locked` and `needs_refill` flags |
+
 ## Testing
 
 ```bash
